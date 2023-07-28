@@ -22,6 +22,9 @@
 #include "networkjobs.h"
 #include "clientsideencryptiontokenselector.h"
 
+#include "networkjobs.h"
+#include "clientsideencryptiontokenselector.h"
+
 #include <QString>
 #include <QObject>
 #include <QJsonDocument>
@@ -32,6 +35,8 @@
 #include <QVector>
 #include <QMap>
 #include <QHash>
+
+#include <libp11.h>
 
 #include <libp11.h>
 
@@ -310,6 +315,8 @@ public slots:
     void getUsersPublicKeyFromServer(const OCC::AccountPtr &account, const QStringList &userIds);
     void fetchCertificateFromKeyChain(const OCC::AccountPtr &account, const QString &userId);
     void writeCertificate(const OCC::AccountPtr &account, const QString &userId, const QSslCertificate &certificate);
+
+    void migrateCertificate();
 
     void migrateCertificate();
 
