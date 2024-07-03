@@ -320,10 +320,6 @@ public slots:
 
     void migrateCertificate();
 
-    void migrateCertificate();
-
-    void migrateCertificate();
-
 private slots:
     void generateKeyPair(const OCC::AccountPtr &account);
     void encryptPrivateKey(const OCC::AccountPtr &account);
