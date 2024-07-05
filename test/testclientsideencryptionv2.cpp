@@ -135,10 +135,11 @@ private slots:
             }
 
             const auto certificatePem = folderUserObject.value("certificate").toString().toUtf8();
+            const auto certificate = QSslCertificate{certificatePem};
             const auto encryptedMetadataKey = QByteArray::fromBase64(folderUserObject.value("encryptedMetadataKey").toString().toUtf8());
 
             if (!encryptedMetadataKey.isEmpty()) {
-                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey);
+                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey, certificate.digest(QCryptographicHash::Sha256));
                 if (decryptedMetadataKey.isEmpty()) {
                     break;
                 }
@@ -236,10 +237,11 @@ private slots:
             }
 
             const auto certificatePem = folderUserObject.value("certificate").toString().toUtf8();
+            const auto certificate = QSslCertificate{certificatePem};
             const auto encryptedMetadataKey = QByteArray::fromBase64(folderUserObject.value("encryptedMetadataKey").toString().toUtf8());
 
             if (!encryptedMetadataKey.isEmpty()) {
-                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey);
+                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey, certificate.digest(QCryptographicHash::Sha256));
                 if (decryptedMetadataKey.isEmpty()) {
                     break;
                 }
@@ -334,10 +336,11 @@ private slots:
             }
 
             const auto certificatePem = folderUserObject.value("certificate").toString().toUtf8();
+            const auto certificate = QSslCertificate{certificatePem};
             const auto encryptedMetadataKey = QByteArray::fromBase64(folderUserObject.value("encryptedMetadataKey").toString().toUtf8());
 
             if (!encryptedMetadataKey.isEmpty()) {
-                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey);
+                const auto decryptedMetadataKey = metadata->decryptDataWithPrivateKey(encryptedMetadataKey, certificate.digest(QCryptographicHash::Sha256));
                 if (decryptedMetadataKey.isEmpty()) {
                     break;
                 }
