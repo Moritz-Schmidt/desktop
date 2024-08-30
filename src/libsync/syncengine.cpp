@@ -822,6 +822,16 @@ void SyncEngine::slotDiscoveryFinished()
         return;
     }
 
+    if (!_remnantReadOnlyFolders.isEmpty()) {
+        handleRemnantReadOnlyFolders();
+        return;
+    }
+
+    if (!_remnantReadOnlyFolders.isEmpty()) {
+        handleRemnantReadOnlyFolders();
+        return;
+    }
+
     finishSync();
 }
 
@@ -1020,17 +1030,17 @@ void SyncEngine::finishSync()
         restoreOldFiles(_syncItems);
     }
 
-    if (_discoveryPhase->_anotherSyncNeeded && !_discoveryPhase->_filesNeedingScheduledSync.empty()) {
+    if (_discoveryPhase && _discoveryPhase->_anotherSyncNeeded && !_discoveryPhase->_filesNeedingScheduledSync.empty()) {
         slotScheduleFilesDelayedSync();
-    } else if (_discoveryPhase->_anotherSyncNeeded && _anotherSyncNeeded == NoFollowUpSync) {
+    } else if (_discoveryPhase && _discoveryPhase->_anotherSyncNeeded && _anotherSyncNeeded == NoFollowUpSync) {
         _anotherSyncNeeded = ImmediateFollowUp;
     }
 
-    if (!_discoveryPhase->_filesUnscheduleSync.empty()) {
+    if (_discoveryPhase && !_discoveryPhase->_filesUnscheduleSync.empty()) {
         slotUnscheduleFilesDelayedSync();
     }
 
-    if (_discoveryPhase->_hasDownloadRemovedItems && _discoveryPhase->_hasUploadErrorItems) {
+    if (_discoveryPhase && _discoveryPhase->_hasDownloadRemovedItems && _discoveryPhase->_hasUploadErrorItems) {
         for (const auto &item : qAsConst(_syncItems)) {
             if (item->_instruction == CSYNC_INSTRUCTION_ERROR && item->_direction == SyncFileItem::Up) {
                 // item->_instruction = CSYNC_INSTRUCTION_IGNORE;
@@ -1103,6 +1113,13 @@ void SyncEngine::finishSync()
     _propagator->start(std::move(_syncItems));
 
     qCInfo(lcEngine) << "#### Post-Reconcile end #################################################### " << _stopWatch.addLapTime(QStringLiteral("Post-Reconcile Finished")) << "ms";
+}
+
+void SyncEngine::handleRemnantReadOnlyFolders()
+{
+    promptUserBeforePropagation([this](auto &&callback) {
+                                    emit aboutToRemoveRemnantsReadOnlyFolders(_remnantReadOnlyFolders, _localPath, callback);
+                                });
 }
 
 template <typename T>
