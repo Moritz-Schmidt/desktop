@@ -1659,9 +1659,14 @@ void Folder::slotNeedToRemoveRemnantsReadOnlyFolders(const QList<SyncFileItemPtr
                                                      const QString &localPath,
                                                      std::function<void (bool)> callback)
 {
-    const auto msg = tr("Do you want to clean up remnant read-only folders left over from previous failed synchronization attempts.");
+    auto listOfFolders = QStringList{};
+    for (const auto &oneFolder : folders) {
+        listOfFolders.push_back(oneFolder->_file);
+    }
+
+    const auto msg = tr("Do you want to clean up remnant read-only folders left over from previous failed synchronization attempts.\n%1");
     auto msgBox = new QMessageBox(QMessageBox::Question, tr("Remove remnant invalid folders?"),
-                                  msg, QMessageBox::NoButton);
+                                  msg.arg(listOfFolders.join("\n")), QMessageBox::NoButton);
     msgBox->setAttribute(Qt::WA_DeleteOnClose);
     msgBox->setWindowFlags(msgBox->windowFlags() | Qt::WindowStaysOnTopHint);
     msgBox->addButton(tr("Proceed to remove remnant folders"), QMessageBox::AcceptRole);
