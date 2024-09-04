@@ -1690,9 +1690,11 @@ void Folder::slotNeedToRemoveRemnantsReadOnlyFolders(const QList<SyncFileItemPtr
                 FileSystem::removeRecursively(localPath + oneFolder->_file);
             }
         }
-        callback(cancel);
-        if (cancel) {
-            setSyncPaused(true);
+        callback(true);
+        setSyncPaused(cancel);
+        if (!cancel) {
+            _lastEtag.clear();
+            slotScheduleThisFolder();
         }
     });
     connect(this, &Folder::destroyed, msgBox, &QMessageBox::deleteLater);
